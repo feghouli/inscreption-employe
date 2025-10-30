@@ -234,7 +234,7 @@ async function submitForm() {
         cancelButtonText: "إغلاق"
       }).then((result) => {
         if (result.isConfirmed) {
-          const receiptURL = `https://feghouli.github.io/telachar-recus-retraite/?empId=${empId}`;
+          const receiptURL = `https://feghouli.github.io/dawnload_recip_empolye/?empId=${empId}`;
           window.location.href = receiptURL;
         } else {
           location.reload();
@@ -266,3 +266,4 @@ async function submitForm() {
 </script>
 </body>
 </html>
+
