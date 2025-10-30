@@ -92,13 +92,31 @@ function validateNumber(input) {
 
 async function checkEmployee() {
   const empId = document.getElementById("empId").value.trim();
+
   if (empId.length < 16) {
-    Swal.fire({ icon: 'warning', title: 'خطأ', text: 'رقم التعريف الوظيفي يجب أن يتكون من 16 رقمًا' });
+    Swal.fire({
+      icon: 'warning',
+      title: 'خطأ',
+      text: 'رقم التعريف الوظيفي يجب أن يتكون من 16 رقمًا'
+    });
     return;
   }
+
+  // ✅ عرض رسالة انتظار أثناء البحث
+  Swal.fire({
+    title: 'جاري البحث عن الموظف...',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
   try {
     const docRef = db.collection("employees").doc(empId);
     const docSnap = await docRef.get();
+
+    Swal.close(); // ⬅️ إغلاق نافذة الانتظار بعد الانتهاء
+
     if (docSnap.exists) {
       const data = docSnap.data();
       Swal.fire({
@@ -111,10 +129,12 @@ async function checkEmployee() {
       Swal.fire("❌ خطأ", "رقم الموظف غير موجود في قاعدة البيانات", "error");
     }
   } catch (err) {
+    Swal.close();
     Swal.fire("❌ خطأ", "حدث خطأ أثناء الاتصال بقاعدة البيانات", "error");
     console.error(err);
   }
 }
+
 
 function showForm(empId, data) {
   const container = document.getElementById("mainContainer");
@@ -252,8 +272,18 @@ async function submitForm() {
                <b>البلدية:</b> ${d.baladiya}<br>
                <b>الرحلة:</b> ${d.trip}<br>
                <b>رقم الهاتف:</b> ${d.phone}`,
-        icon: "warning", confirmButtonText: "حسنًا"
-      }).then(() => location.reload());
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "تحميل الوصل",
+        cancelButtonText: "إغلاق"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const receiptURL = `https://feghouli.github.io/dawnload_recip_empolye/?empId=${d.empId}`;
+          window.location.href = receiptURL;
+        } else {
+          location.reload();
+        }
+      });
     } else {
       Swal.fire("❌ خطأ", "تعذر إرسال البيانات", "error");
       submitBtn.disabled = false; submitBtn.style.opacity = 1;
@@ -266,4 +296,3 @@ async function submitForm() {
 </script>
 </body>
 </html>
-
