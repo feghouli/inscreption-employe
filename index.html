@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل الموظفين في الرحلات 2025</title>
+  <title>تسجيلات الموظفين للرحلات 2025</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -16,11 +16,10 @@
       min-height: 100vh; padding: 15px; overflow-x: hidden; margin: 0;
     }
     .container {
-      position: relative; background: white; padding: 35px 25px;
+      position: relative; background: white; padding: 35px 40px 10px;
       border-radius: 18px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-      text-align: center; width: 100%; max-width: 400px; margin: 0 auto;
+      text-align: center; width: 100%; max-width: 500px; margin: 0 auto;
     }
-    h2 { margin-bottom: 20px; font-weight: 700; font-size: 22px; color: #333; }
     input, select {
       width: 100%; padding: 14px 18px; margin-bottom: 18px;
       border-radius: 10px; border: 2px solid #e0e0e0;
@@ -33,19 +32,42 @@
       font-size: 15px; cursor: pointer; font-weight: 600; width: 100%;
       font-family: 'Cairo', sans-serif;
     }
-
-#phoneField {
-  direction: ltr;
-  text-align: center;
-}
-
+    #phoneField { direction: ltr; text-align: center; }
+    .page-header { text-align: center; margin-bottom: 25px; font-family: "Cairo", sans-serif; }
+    .page-header .header-logo {
+      width: 160px; height: auto; display: block; margin: 0 auto 15px auto;
+      filter: contrast(1.05) brightness(1.1); animation: pulseLogo 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .gradient-title {
+      font-family: "Cairo", sans-serif; font-size: 24px; font-weight: 700;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-align: center; position: relative; margin-top: 40px; margin-bottom: 15px; display: inline-block;
+    }
+    .gradient-title::after {
+      content: ""; position: absolute; bottom: -5px; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
+
 <div class="container" id="mainContainer">
-  <h2>التحقق من رقم التعريف الوظيفي للموظف</h2>
-  <input type="text" id="empId" placeholder="أدخل رقم التعريف الوظيفي" oninput="validateNumber(this)">
-  <button onclick="checkEmployee()">تحقق من رقمك الوظيفي</button>
+  <div class="page-header">
+    <img src="https://lh3.googleusercontent.com/d/1AOSzlvuRb-fAO0bqvo412HcHTfpRAX15" alt="شعار اللجنة" class="header-logo">
+    <div class="header-text">
+      الجمهورية الجزائرية الديمقراطية الشعبية<br>
+      وزارة التربية الوطنية<br>
+      اللجنة الوطنية للخدمات الاجتماعية لعمال التربية<br>
+      اللجنة الولائية للخدمات الاجتماعية لعمال التربية لولاية توقرت
+    </div>
+    <h2 class="gradient-title">بوابة تسجيل الموظفين في الرحلات</h2>
+    <input type="text" id="empId" placeholder="أدخل رقم التعريف الوظيفي" oninput="validateNumber(this)">
+    <button onclick="checkEmployee()">تحقق من رقم التعريف</button>
+  </div>
 </div>
 
 <script>
@@ -58,118 +80,111 @@ const firebaseConfig = {
   appId: "1:712694455348:web:5b4e8df57347edf944fe61",
   measurementId: "G-TTJT4LQ65L"
 };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwEcUGi1Th-MhzNx9HQHpb44Wpx7JQ-7pFackTr2sjwnfoRuz375m3xZ7dg5Tx1BblI7Q/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbxM2xkEJs_qhORBq0y6XqHHAjhhUm-WE5C8mUhSYMgSUfM5-0csWQfjG9-WGQ-_qHvrhg/exec";
 
-  function validateNumber(input) {
-    input.value = input.value.replace(/\D/g, '');
-    if (input.value.length > 16) input.value = input.value.slice(0, 16);
+function validateNumber(input) {
+  input.value = input.value.replace(/\D/g, '');
+  if (input.value.length > 16) input.value = input.value.slice(0, 16);
+}
+
+async function checkEmployee() {
+  const empId = document.getElementById("empId").value.trim();
+  if (empId.length < 16) {
+    Swal.fire({ icon: 'warning', title: 'خطأ', text: 'رقم التعريف الوظيفي يجب أن يتكون من 16 رقمًا' });
+    return;
   }
-
-  async function checkEmployee() {
-    const empId = document.getElementById("empId").value.trim();
-    if (empId.length < 16) {
-      Swal.fire({ icon: 'warning', title: 'خطأ', text: 'رقم التعريف الوظيفي يجب أن يتكون من 16 رقمًا' });
-      return;
+  try {
+    const docRef = db.collection("employees").doc(empId);
+    const docSnap = await docRef.get();
+    if (docSnap.exists) {
+      const data = docSnap.data();
+      Swal.fire({
+        title: "✅ تم التحقق بنجاح",
+        html: `<b>الاسم واللقب:</b> ${data.name}<br><b>الرتبة:</b> ${data.grade}<br><b>مكان العمل:</b> ${data.place}`,
+        icon: "success",
+        confirmButtonText: "متابعة التسجيل"
+      }).then(() => showForm(empId, data));
+    } else {
+      Swal.fire("❌ خطأ", "رقم الموظف غير موجود في قاعدة البيانات", "error");
     }
-    try {
-      const docRef = db.collection("employees").doc(empId);
-      const docSnap = await docRef.get();
-      if (docSnap.exists) {
-        const data = docSnap.data();
-        Swal.fire({
-          title: "✅ تم التحقق بنجاح",
-          html: `<b>الاسم واللقب:</b> ${data.name}<br><b>الرتبة:</b> ${data.grade}<br><b>مكان العمل:</b> ${data.place}`,
-          icon: "success",
-          confirmButtonText: "متابعة التسجيل"
-        }).then(() => showForm(empId, data));
-      } else {
-        Swal.fire("❌ خطأ", "رقم الموظف غير موجود في قاعدة البيانات", "error");
-      }
-    } catch (err) {
-      Swal.fire("❌ خطأ", "حدث خطأ أثناء الاتصال بقاعدة البيانات", "error");
-      console.error(err);
-    }
+  } catch (err) {
+    Swal.fire("❌ خطأ", "حدث خطأ أثناء الاتصال بقاعدة البيانات", "error");
+    console.error(err);
   }
+}
 
-  function showForm(empId, data) {
-    const container = document.getElementById("mainContainer");
-    container.innerHTML = `
-      <h2>استمارة التسجيل في الرحلات 2025</h2>
-      <input type="text" id="empIdField" value="${empId}" readonly>
-      <input type="text" id="nameField" value="${data.name}" readonly>
-      <input type="text" id="gradeField" value="${data.grade}" readonly>
-      <input type="text" id="placeField" value="${data.place}" readonly>
+function showForm(empId, data) {
+  const container = document.getElementById("mainContainer");
+  container.innerHTML = `
+    <h2>استمارة التسجيل في الرحلات 2025</h2>
+    <input type="text" id="empIdField" value="${empId}" readonly>
+    <input type="text" id="nameField" value="${data.name}" readonly>
+    <input type="text" id="gradeField" value="${data.grade}" readonly>
+    <input type="text" id="placeField" value="${data.place}" readonly>
 
-      <select id="daairaField" onchange="updateBaladiya()">
-        <option value="">اختر دائرة العمل</option>
-        <option value="توقرت">توقرت</option>
-        <option value="تماسين">تماسين</option>
-        <option value="المقارين">المقارين</option>
-        <option value="الحجيرة">الحجيرة</option>
-        <option value="الطيبات">الطيبات</option>
-      </select>
+    <select id="daairaField" onchange="updateBaladiya()">
+      <option value="">اختر دائرة العمل</option>
+      <option value="توقرت">توقرت</option>
+      <option value="تماسين">تماسين</option>
+      <option value="المقارين">المقارين</option>
+      <option value="الحجيرة">الحجيرة</option>
+      <option value="الطيبات">الطيبات</option>
+    </select>
 
-      <select id="baladiyaField">
-        <option value="">اختر بلدية العمل</option>
-      </select>
+    <select id="baladiyaField">
+      <option value="">اختر بلدية العمل</option>
+    </select>
 
-      <select id="tripField">
-        <option value="">اختر الرحلة</option>
-        <option value="مصر">مصر</option>
-        <option value="قالمة">قالمة</option>
-        <option value="سطيف">سطيف</option>
-        <option value="تمنراست">تمنراست</option>
-      </select>
+    <select id="tripField">
+      <option value="">اختر الرحلة</option>
+      <option value="مصر">مصر</option>
+      <option value="قالمة">قالمة</option>
+      <option value="سطيف">سطيف</option>
+      <option value="تمنراست">تمنراست</option>
+    </select>
 
-      <input type="text" id="phoneField" placeholder="رقم الهاتف (10 أرقام)" oninput="validatePhone(this)">
-      <button id="submitBtn" onclick="submitForm()">تسجيل</button>
-    `;
-    window.baladiyaMap = {
-      "توقرت": ["توقرت", "النزلة", "تبسبست", "الزاوية العابدية"],
-      "تماسين": ["تماسين", "بلدة عمر"],
-      "المقارين": ["المقارين", "سيدي سليمان"],
-      "الحجيرة": ["الحجيرة", "العالية"],
-      "الطيبات": ["الطيبات", "المنقر", "ابن ناصر"]
-    };
+    <input type="text" id="phoneField" placeholder="رقم الهاتف (10 أرقام)" oninput="validatePhone(this)">
+    <button id="submitBtn" onclick="submitForm()">تسجيل</button>
+  `;
+  window.baladiyaMap = {
+    "توقرت": ["توقرت", "النزلة", "تبسبست", "الزاوية العابدية"],
+    "تماسين": ["تماسين", "بلدة عمر"],
+    "المقارين": ["المقارين", "سيدي سليمان"],
+    "الحجيرة": ["الحجيرة", "العالية"],
+    "الطيبات": ["الطيبات", "المنقر", "ابن ناصر"]
+  };
+}
+
+function updateBaladiya() {
+  const daaira = document.getElementById("daairaField").value;
+  const baladiyaSelect = document.getElementById("baladiyaField");
+  baladiyaSelect.innerHTML = '<option value="">اختر بلدية العمل</option>';
+  if (daaira && window.baladiyaMap[daaira]) {
+    window.baladiyaMap[daaira].forEach(b => {
+      const option = document.createElement("option");
+      option.value = b; option.text = b;
+      baladiyaSelect.add(option);
+    });
   }
+}
 
-  function updateBaladiya() {
-    const daaira = document.getElementById("daairaField").value;
-    const baladiyaSelect = document.getElementById("baladiyaField");
-    baladiyaSelect.innerHTML = '<option value="">اختر بلدية العمل</option>';
-    if (daaira && window.baladiyaMap[daaira]) {
-      window.baladiyaMap[daaira].forEach(b => {
-        const option = document.createElement("option");
-        option.value = b; option.text = b;
-        baladiyaSelect.add(option);
-      });
-    }
-  }
-
-  function validatePhone(input) {
-  // نحذف أي رموز غير الأرقام
+function validatePhone(input) {
   let value = input.value.replace(/\D/g, "");
-
-  // نحدّد الحد الأقصى بـ 10 أرقام
   if (value.length > 10) value = value.slice(0, 10);
-
-  // نضيف تنسيق: 00 00 00 00 00
   let formatted = "";
   for (let i = 0; i < value.length; i += 2) {
     if (i > 0) formatted += " ";
     formatted += value.substring(i, i + 2);
   }
-
   input.value = formatted;
 }
 
- async function submitForm() {
+async function submitForm() {
   const submitBtn = document.getElementById("submitBtn");
-  submitBtn.disabled = true;
-  submitBtn.style.opacity = 0.6;
+  submitBtn.disabled = true; submitBtn.style.opacity = 0.6;
 
   const empId = document.getElementById("empIdField").value;
   const name = document.getElementById("nameField").value;
@@ -189,7 +204,6 @@ const firebaseConfig = {
     submitBtn.disabled = false; submitBtn.style.opacity = 1; return;
   }
 
-  // 🔹 استخدم URLSearchParams بدلاً من FormData
   const params = new URLSearchParams();
   params.append("empId", empId);
   params.append("name", name);
@@ -208,43 +222,47 @@ const firebaseConfig = {
       headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
       body: params.toString()
     });
-
     const data = await res.json();
 
     if (data.result === "success") {
-      Swal.fire("✅ تم التسجيل بنجاح", "تم تسجيل بياناتك بنجاح", "success")
-        .then(() => location.reload());
+      Swal.fire({
+        title: "✅ تم التسجيل بنجاح",
+        text: "تم تسجيل بياناتك بنجاح",
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: "تحميل الوصل",
+        cancelButtonText: "إغلاق"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const receiptURL = `https://feghouli.github.io/telachar-recus-retraite/?empId=${empId}`;
+          window.location.href = receiptURL;
+        } else {
+          location.reload();
+        }
+      });
     } else if (data.result === "exists") {
-  const d = data.data;
-  Swal.fire({
-    title: "⚠️ التسجيل موجود مسبقًا",
-    html: `<b>رقم التعريف:</b> ${d.empId}<br>
-           <b>الاسم واللقب:</b> ${d.name}<br>
-           <b>الرتبة:</b> ${d.grade}<br>
-           <b>مكان العمل:</b> ${d.place}<br>
-           <b>الدائرة:</b> ${d.daaira}<br>
-           <b>البلدية:</b> ${d.baladiya}<br>
-           <b>الرحلة:</b> ${d.trip}<br>
-           <b>رقم الهاتف:</b> ${d.phone}`,
-    icon: "warning", confirmButtonText: "حسنًا"
-  }).then(() => location.reload());
-
-} else {
-        Swal.fire("❌ خطأ", "تعذر إرسال البيانات", "error");
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = 1;
-      }
-    } catch (error) {
-      Swal.fire("❌ خطأ", "فشل الاتصال بخدمة التسجيل", "error");
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = 1;
+      const d = data.data;
+      Swal.fire({
+        title: "⚠️ التسجيل موجود مسبقًا",
+        html: `<b>رقم التعريف:</b> ${d.empId}<br>
+               <b>الاسم واللقب:</b> ${d.name}<br>
+               <b>الرتبة:</b> ${d.grade}<br>
+               <b>مكان العمل:</b> ${d.place}<br>
+               <b>الدائرة:</b> ${d.daaira}<br>
+               <b>البلدية:</b> ${d.baladiya}<br>
+               <b>الرحلة:</b> ${d.trip}<br>
+               <b>رقم الهاتف:</b> ${d.phone}`,
+        icon: "warning", confirmButtonText: "حسنًا"
+      }).then(() => location.reload());
+    } else {
+      Swal.fire("❌ خطأ", "تعذر إرسال البيانات", "error");
+      submitBtn.disabled = false; submitBtn.style.opacity = 1;
     }
+  } catch (error) {
+    Swal.fire("❌ خطأ", "فشل الاتصال بخدمة التسجيل", "error");
+    submitBtn.disabled = false; submitBtn.style.opacity = 1;
   }
-
-
+}
 </script>
 </body>
 </html>
-
-
-
